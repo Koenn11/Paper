@@ -1,0 +1,39 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Koenn <koenn@bits.team>
+Date: Tue, 5 Jan 2021 09:48:13 +0100
+Subject: [PATCH] Added ComparatorUpdateEvent
+
+
+diff --git a/src/main/java/net/minecraft/server/BlockRedstoneComparator.java b/src/main/java/net/minecraft/server/BlockRedstoneComparator.java
+index 3e771f6d770932b8b71b9e13c3adf71ac9249709..36066e0a1fc53c52c2960b47617ea27c153f927b 100644
+--- a/src/main/java/net/minecraft/server/BlockRedstoneComparator.java
++++ b/src/main/java/net/minecraft/server/BlockRedstoneComparator.java
+@@ -1,10 +1,11 @@
+ package net.minecraft.server;
+ 
++import org.bukkit.craftbukkit.event.CraftEventFactory;
++import team.bits.internal.event.ComparatorUpdateEvent;
++
++import javax.annotation.Nullable;
+ import java.util.List;
+ import java.util.Random;
+-import javax.annotation.Nullable;
+-
+-import org.bukkit.craftbukkit.event.CraftEventFactory; // CraftBukkit
+ 
+ public class BlockRedstoneComparator extends BlockDiodeAbstract implements ITileEntity {
+ 
+@@ -64,7 +65,12 @@ public class BlockRedstoneComparator extends BlockDiodeAbstract implements ITile
+             }
+         }
+ 
+-        return i;
++        org.bukkit.block.Block bukkitblock = org.bukkit.craftbukkit.block.CraftBlock.at(world, blockposition);
++
++        ComparatorUpdateEvent event = new ComparatorUpdateEvent(bukkitblock, i);
++        event.callEvent();
++
++        return event.getRedstoneOutput();
+     }
+ 
+     @Nullable
